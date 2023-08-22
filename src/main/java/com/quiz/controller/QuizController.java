@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.quiz.Entity.Question_Wrapper;
 import com.quiz.Entity.Quiz_Entity;
 import com.quiz.Entity.Response_Question;
+import com.quiz.Entity.Frontend.PostBasicData;
+import com.quiz.Entity.Frontend.QuizQuestionUI;
 import com.quiz.service.QuizService;
 
 
@@ -29,11 +31,22 @@ public class QuizController {
 	@Autowired
 	QuizService quizservice;
 	
-	
+	@Autowired
+	QuizQuestionUI questionquiz;
+	/*
 	@PostMapping("/create")
 	public ResponseEntity<String> createmethod(@RequestParam String category,
-			@RequestParam int numq,@RequestParam String title){
-		return quizservice.createQuiz(category,numq,title); 
+			@RequestParam int numq,@RequestParam String title,@RequestParam String categorytopic){
+		System.out.println(categorytopic);
+		return quizservice.createQuiz(category,numq,title,categorytopic); 
+	}*/
+	
+	/* post the basic start quiz detail*/
+	/*get back the object of id and question*/
+	
+	@PostMapping("/startquiz")
+	public ResponseEntity<QuizQuestionUI> getDataQuiz(@RequestBody PostBasicData postdata){
+		return quizservice.getdatauser(postdata);
 	}
 	@GetMapping("/getall")
 	public ResponseEntity<List<Quiz_Entity>> getdetail(){
@@ -43,6 +56,7 @@ public class QuizController {
 	public ResponseEntity<List<Question_Wrapper>> gettitle(@PathVariable String title){
 		return quizservice.gettitle(title);
 	}
+	
 	
 	@GetMapping("/getId/{id}")
 	public ResponseEntity<List<Question_Wrapper>> getdetailbyid(@PathVariable Integer id){

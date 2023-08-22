@@ -13,8 +13,11 @@ import com.quiz.Entity.Question;
 import com.quiz.Entity.Question_Wrapper;
 import com.quiz.Entity.Quiz_Entity;
 import com.quiz.Entity.Response_Question;
+import com.quiz.Entity.Frontend.PostBasicData;
+import com.quiz.Entity.Frontend.QuizQuestionUI;
 import com.quiz.database.QuestionDao;
 import com.quiz.database.QuizDao;
+import com.quiz.database.UserDataDAO;
 @Service
 public class QuizService {
 	@Autowired
@@ -23,13 +26,21 @@ public class QuizService {
 	@Autowired
 	QuestionDao jpa;
 	
-	public  ResponseEntity<String> createQuiz(String category, int numq, String title) {
+	@Autowired
+	UserDataDAO userJPA;
+	@Autowired
+	QuizQuestionUI quizuserdata;
+	
+	public  ResponseEntity<String> createQuiz(String category, int numq, String title,String categorytopic) {
 		// TODO Auto-generated method stub
 		List<Question> questions = null;
-		questions=jpa.findrandombyCategory(category, numq);
+		questions=jpa.findrandombyCategory(category, numq,categorytopic);
 		System.out.println(questions);
 		Quiz_Entity quiz=new Quiz_Entity();
 		quiz.setTitle(title);
+		
+		quiz.setCategory(category);
+		quiz.setCategorytopic(categorytopic);
 		quiz.setQuestion(questions);
 		quizdao.save(quiz);
 		return new ResponseEntity<String>("sucess",HttpStatus.CREATED);
@@ -59,8 +70,12 @@ public class QuizService {
 					List<Question> questionsfromdb=quiz.get().getQuestion();
 					
 					for(Question q:questionsfromdb) {
-						Question_Wrapper questionw=new Question_Wrapper(q.getId(),	 q.getQuestionTitle(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4());
-						questionforuser.add(questionw);
+						Question_Wrapper questionwrapper=new Question_Wrapper();
+						questionwrapper.setId(q.getId());
+						questionwrapper.setQuestionTitle(q.getQuestiontitle());
+						questionwrapper.setOptions(q.getOptions());
+						questionforuser.add(questionwrapper);
+
 					}
 					return new ResponseEntity<List<Question_Wrapper>>(questionforuser,HttpStatus.OK);
 				}
@@ -79,12 +94,15 @@ public class QuizService {
 		try {
 			if((quizdao.findById(id)!=null)) {
 				Optional<Quiz_Entity> quiz=quizdao.findById(id);
-				System.out.println(quiz.get());
+				//System.out.println(quiz.get());
 				List<Question> questionsfromdb=quiz.get().getQuestion();
 				
 				for(Question q:questionsfromdb) {
-					Question_Wrapper questionw=new Question_Wrapper(q.getId(),q.getQuestionTitle(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4());
-					questionforuser.add(questionw);
+					Question_Wrapper questionwrapper=new Question_Wrapper();
+					questionwrapper.setId(q.getId());
+					questionwrapper.setQuestionTitle(q.getQuestiontitle());
+					questionwrapper.setOptions(q.getOptions());
+					questionforuser.add(questionwrapper);
 				}
 				return new ResponseEntity<List<Question_Wrapper>>(questionforuser,HttpStatus.OK);
 			}
@@ -105,7 +123,7 @@ public class QuizService {
 				int index=0;
 				int right=0;
 				for(Response_Question response:responses) {
-					if(response.getResponse().equals(questions.get(index).getRightAnswer())) {
+					if(response.getResponse().equals(questions.get(index).getRightanswer())) {
 						right++;
 					}
 					index++;
@@ -125,6 +143,19 @@ public class QuizService {
 		
 		
 	}
+
+	public ResponseEntity<QuizQuestionUI> getdatauser(PostBasicData postdata) {
+		// TODO Auto-generated method stub
+		userJPA.save(postdata);
+		Integer id=quizdao.findbyid(postdata.getCategory(),postdata.getCategorytopic());
+		System.out.println("id of user is "+id);
+		quizuserdata.setId(id);
+		quizuserdata.setQuestion(getQuizQuestion(id).getBody());
+		System.out.println(quizuserdata.getQuestion());
+		return new ResponseEntity<QuizQuestionUI>(quizuserdata,HttpStatus.OK);
+	}
+
+	
 	
 
 }

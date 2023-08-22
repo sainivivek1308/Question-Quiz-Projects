@@ -9,38 +9,28 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 @Entity
+@Table(name="Quiz")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Quiz_Entity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String title;
+	private String categorytopic;
+	private String category;
 	@ManyToMany
 	private List<Question> question;
 	public Integer getId() {
 		return id;
 	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public List<Question> getQuestion() {
-		return question;
-	}
-	public void setQuestion(List<Question> question) {
-		this.question = question;
-	}
-	@Override
-	public String toString() {
-		return "Quiz [id=" + id + ", title=" + title + ", question=" + question + "]";
-	}
-	
-	
+		
 	
 
 }

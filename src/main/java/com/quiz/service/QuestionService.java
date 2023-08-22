@@ -49,19 +49,10 @@ public class QuestionService {
 	}
 	
 	public ResponseEntity<String> post(Question quiz) {
-		try {
-			if(jpa.save(quiz)!=null) {
 				jpa.save(quiz);
 				return new ResponseEntity<String>("Sucess insert sucessfully",HttpStatus.CREATED);
-			}
-		}
-		catch (Exception e) {
-			// TODO: handle exception
-			return new ResponseEntity<>("Not insert sucessfully",HttpStatus.INTERNAL_SERVER_ERROR);
-			
-		}
 		
-		return new ResponseEntity<>("Not insert sucessfully",HttpStatus.INTERNAL_SERVER_ERROR);
+		//return new ResponseEntity<>("Not insert sucessfully",HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	public ResponseEntity<Question> getbyiddetail(String id) {
 		int id1=Integer.parseInt(id);
