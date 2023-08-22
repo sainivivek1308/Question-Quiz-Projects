@@ -114,7 +114,6 @@ public class QuizService {
 	}
 
 	public ResponseEntity<String> calculateresult(int id, List<Response_Question> responses) {
-		// TODO Auto-generated method stub
 		try {
 			if(quizdao.findById(id)!=null) {
 				Optional<Quiz_Entity> quiz=quizdao.findById(id);
@@ -138,16 +137,29 @@ public class QuizService {
 			
 		}
 		return new ResponseEntity<String>("Id is not found so score not calculate",HttpStatus.BAD_REQUEST );
+	}
+	public ResponseEntity<String> deletebyid(String id) {
+		// TODO Auto-generated method stub
+		Integer id1=Integer.parseInt(id);
+		//Optional<Quiz_Entity> rs=quizdao.findById(id1);
 		
+		if(id1!=null) {
+			quizdao.deleteById(id1);
+			return new ResponseEntity<String>("deleted Record Sucessfully",HttpStatus.OK);
+		}
 		
-		
-		
+		return new ResponseEntity<String>("Record is not found that's why not delete ",HttpStatus.BAD_REQUEST);
 	}
 
 	public ResponseEntity<QuizQuestionUI> getdatauser(PostBasicData postdata) {
-		// TODO Auto-generated method stub
-		userJPA.save(postdata);
-		Integer id=quizdao.findbyid(postdata.getCategory(),postdata.getCategorytopic());
+		
+		PostBasicData postdata1=new PostBasicData();
+		postdata1.setCategory(postdata.getCategory().toLowerCase());
+		postdata1.setCategorytopic(postdata.getCategorytopic().toLowerCase());
+		postdata1.setName(postdata.getName().toLowerCase());
+		postdata1.setId(postdata.getId());
+		userJPA.save(postdata1);
+		Integer id=quizdao.findbyid(postdata.getCategory().toLowerCase(),postdata.getCategorytopic().toLowerCase());
 		System.out.println("id of user is "+id);
 		quizuserdata.setId(id);
 		quizuserdata.setQuestion(getQuizQuestion(id).getBody());

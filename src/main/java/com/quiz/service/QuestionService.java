@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +48,15 @@ public class QuestionService {
 	}
 	
 	public ResponseEntity<String> post(Question quiz) {
-				jpa.save(quiz);
-				return new ResponseEntity<String>("Sucess insert sucessfully",HttpStatus.CREATED);
+		Question question=new Question();
+		question.setCategory(quiz.getCategory().toLowerCase());
+		question.setCategorytopic(quiz.getCategorytopic().toLowerCase());
+		question.setDifficultylevel(quiz.getDifficultylevel().toLowerCase());
+		question.setOptions(quiz.getOptions());
+		question.setQuestiontitle(quiz.getQuestiontitle());
+		question.setRightanswer(quiz.getRightanswer());	
+		jpa.save(question);
+		return new ResponseEntity<String>("Sucess insert sucessfully",HttpStatus.CREATED);
 		
 		//return new ResponseEntity<>("Not insert sucessfully",HttpStatus.INTERNAL_SERVER_ERROR);
 	}
